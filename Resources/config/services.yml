@@ -1,0 +1,6 @@
+services:
+
+    scout.form.flow.healthForm:
+        class: ScoutEvent\ManagementBundle\Form\HealthFormFlow
+        parent: craue.form.flow
+        scope: request

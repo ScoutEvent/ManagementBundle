@@ -1,0 +1,68 @@
+scout_event_list:
+    path:     /event/list
+    defaults:
+        _controller: ScoutEventManagementBundle:Event:list
+        application:
+            icon: fa-book
+            large: true
+            name: Event List
+
+scout_event_create:
+    path:     /event/create
+    defaults:
+        _controller: ScoutEventManagementBundle:Event:create
+        roles: [ ROLE_EVENT_ADMIN ]
+        application:
+            icon: fa-plus-square
+            name: New Event
+
+scout_event_edit:
+    path:     /event/edit/{eventId}
+    defaults:
+        _controller: ScoutEventManagementBundle:Event:edit
+        roles: [ ROLE_EVENT_ADMIN ]
+
+scout_group_list:
+    path:     /group/list
+    defaults:
+        _controller: ScoutEventManagementBundle:Group:list
+        roles: [ ROLE_GROUP_ADMIN ]
+        application:
+            icon: fa-group
+            name: Group List
+
+scout_group_create:
+    path:     /group/create
+    defaults:
+        _controller: ScoutEventManagementBundle:Group:create
+        roles: [ ROLE_GROUP_ADMIN ]
+
+scout_group_edit:
+    path:     /group/edit/{groupId}
+    defaults:
+        _controller: ScoutEventManagementBundle:Group:edit
+        roles: [ ROLE_GROUP_ADMIN ]
+
+scout_participant_list:
+    path:     /event/{eventId}/participants
+    defaults:
+        _controller: ScoutEventManagementBundle:Participant:list
+        roles: [ IS_AUTHENTICATED_FULLY ]
+
+scout_participant_create:
+    path:     /event/{eventId}/participant/create
+    defaults:
+        _controller: ScoutEventManagementBundle:Participant:create
+        roles: [ IS_AUTHENTICATED_FULLY ]
+
+scout_participant_edit:
+    path:     /participant/edit/{participantId}
+    defaults:
+        _controller: ScoutEventManagementBundle:Participant:edit
+        roles: [ IS_AUTHENTICATED_FULLY ]
+
+scout_participant_health_form:
+    path:     /participant/health_form/{participantId}
+    defaults:
+        _controller: ScoutEventManagementBundle:Participant:healthForm
+        roles: [ IS_AUTHENTICATED_FULLY ]

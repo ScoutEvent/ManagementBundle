@@ -1,0 +1,23 @@
+{% extends 'ScoutBaseBundle:Default:base.html.twig' %}
+
+{% block body %}
+    <div class="col-sm-10 col-sm-offset-1 singlebody">
+        <h1 class="page-header">
+            Health Form <small>{{ name }}</small>
+        </h1>
+        <form method="post" {{ form_enctype(form) }}>
+            {{ form_errors(form) }}
+
+            {{ form_rest(form) }}
+
+            {% include 'CraueFormFlowBundle:FormFlow:buttons.html.twig' with {
+                craue_formflow_button_class_last: 'btn btn-primary',
+                craue_formflow_button_class_back: 'btn',
+                craue_formflow_button_class_reset: 'btn btn-warning'
+            } %}
+            
+        </form>
+        <div class="clearfix"></div>
+        <div class="clearfix">&nbsp;</div>
+    </div>
+{% endblock %}

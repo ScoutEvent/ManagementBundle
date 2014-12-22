@@ -1,0 +1,15 @@
+{% extends 'ScoutBaseBundle:Default:base.html.twig' %}
+
+{% block body %}
+    <div class="col-sm-10 col-sm-offset-1 singlebody">
+        <h1 class="page-header">
+            Create Participant
+            <div class="pull-right">
+                <a href="{{ path('scout_participant_list', {'eventId': eventId}) }}" class="btn btn-danger">Cancel</a>
+            </div>
+        </h1>
+        {{ form(form) }}
+        <div class="clearfix"></div>
+        <div class="clearfix">&nbsp;</div>
+    </div>
+{% endblock %}

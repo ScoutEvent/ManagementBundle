@@ -1,0 +1,52 @@
+{% extends 'ScoutBaseBundle:Default:base.html.twig' %}
+
+{% block body %}
+    <div class="col-sm-10 col-sm-offset-1 singlebody">
+        <h1 class="page-header">Participants</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Group</th>
+                    <th>Young Person</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for participant in participants %}
+                    <tr>
+                        <td>{{ participant[0].getName }}</td>
+                        <td>{{ participant[0].getGroupUnit.getName }}</td>
+                        <td>{% if participant[0].youngPerson %}Yes{% else %}No{% endif %}</td>
+                        {% if admin or participant[0].getGroupUnit.getOwner == user %}
+                            <td>
+                                <a href="{{ path('scout_participant_edit', {'participantId': participant[0].getId}) }}" class="btn btn-default">
+                                    <i class="fa fa-edit"></i>Edit
+                                </a>
+                                {% if participant['health_forms'] == 1 %}
+                                    <span><i class="fa fa-check-square-o"></i> Complete</span>
+                                {% endif %}
+                            </td>
+                        {% elseif participant[0].getOwner == user %}
+                            <td>
+                                <a href="{{ path('scout_participant_health_form', {'participantId': participant[0].getId}) }}" class="btn btn-default">
+                                    <i class="fa fa-file-text"></i>Health Form
+                                </a>
+                                {% if participant['health_forms'] == 1 %}
+                                    <span><i class="fa fa-check-square-o"></i> Complete</span>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="4" class="text-right">
+                        <a href="{{ path('scout_participant_create', {'eventId': eventId}) }}" class="btn btn-default">
+                            <i class="fa fa-plus"></i> Create
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

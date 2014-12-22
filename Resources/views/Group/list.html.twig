@@ -1,0 +1,46 @@
+{% extends 'ScoutBaseBundle:Default:base.html.twig' %}
+
+{% block body %}
+    <div class="col-sm-10 col-sm-offset-1 singlebody">
+        <h1 class="page-header">Groups</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Contact</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    {% if create %}
+                        <th>Edit</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for group in groups %}
+                    <tr>
+                        <td>{{ group.getName }}</td>
+                        <td>{{ group.getContact }}</td>
+                        <td>{{ group.getOwner.getEmail }}</td>
+                        <td>{{ group.getPhone }}</td>
+                        {% if create %}
+                            <td>
+                                <a href="{{ path('scout_group_edit', {'groupId': group.getId}) }}" class="btn btn-default">
+                                    <i class="fa fa-edit"></i>Edit
+                                </a>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                {% if create %}
+                    <tr>
+                        <td colspan="5" class="text-right">
+                            <a href="{{ path('scout_group_create') }}" class="btn btn-default">
+                                <i class="fa fa-plus"></i> Create
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

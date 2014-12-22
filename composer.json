@@ -1,0 +1,43 @@
+{
+    "name" : "ScoutEvent/ManagementBundle",
+    "description" : "Create and manage groups and events in the DataBundle and perform Health Forms.",
+    "type" : "symfony-bundle",
+    "authors" : [{
+        "name" : "Chris Staite",
+        "email" : "chris@yourdreamnet.co.uk"
+    }],
+    "keywords" : [
+        "Scout Event Management"
+    ],
+    "license" : [
+        "GPL"
+    ],
+    "require" : {
+        "ScoutEvent/BaseBundle": ">=0.1-dev",
+        "ScoutEvent/PasswordResetBundle": ">=0.1-dev",
+        "ScoutEvent/DataBundle": ">=0.1-dev",
+        "craue/formflow-bundle": "~2.0",
+        "symfony/translation": "~2.6"
+    },
+    "autoload" : {
+        "psr-0" : {
+            "ScoutEvent\\ManagementBundle" : ""
+        }
+    },
+    "target-dir" : "ScoutEvent/ManagementBundle",
+    "repositories" : [{
+        "type" : "vcs",
+        "url" : "https://github.com/ScoutEvent/BaseBundle.git"
+    }, {
+        "type" : "vcs",
+        "url" : "https://github.com/ScoutEvent/PasswordResetBundle.git"
+    }, {
+        "type" : "vcs",
+        "url" : "https://github.com/ScoutEvent/DataBundle.git"
+    }],
+    "extra" : {
+        "branch-alias" : {
+            "dev-master" : "0.1-dev"
+        }
+    }
+}
