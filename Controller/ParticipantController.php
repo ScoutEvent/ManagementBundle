@@ -155,7 +155,9 @@ class ParticipantController extends Controller
             }
         }
 
-        $form = $this->createForm(new ParticipantType(), new Participant(), array(
+        $participant = new Participant();
+        $participant->setYoungPerson(true);
+        $form = $this->createForm(new ParticipantType(), $participant, array(
             'action' => $this->generateUrl('scout_participant_create', array(
                 'eventId' => $eventId
             )),
