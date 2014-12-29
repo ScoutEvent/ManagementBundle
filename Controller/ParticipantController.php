@@ -91,6 +91,7 @@ class ParticipantController extends Controller
         
         // Send password reset email
         $message = \Swift_Message::newInstance();
+        $message->setFrom($this->container->getParameter('mailer_from'));
         $message->setSubject($participant->getEvent()->getName() . ' Registration');
         
         $resetLink = $this->generateUrl('scout_password_reset', array(
@@ -117,6 +118,7 @@ class ParticipantController extends Controller
     {
         // Send password reset email
         $message = \Swift_Message::newInstance();
+        $message->setFrom($this->container->getParameter('mailer_from'));
         $message->setSubject($participant->getEvent()->getName() . ' Registration');
         
         $formLink = $this->generateUrl('scout_base_app_list');
