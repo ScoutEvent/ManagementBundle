@@ -10,6 +10,7 @@ use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\MessageSelector;
 
 use ScoutEvent\ManagementBundle\Form\Type\ParticipantType;
+use ScoutEvent\ManagementBundle\Form\Type\MultipleParticipantType;
 use ScoutEvent\ManagementBundle\Form\Type\HealthFormType;
 use ScoutEvent\DataBundle\Entity\Participant;
 use ScoutEvent\DataBundle\Entity\HealthForm;
@@ -42,16 +43,16 @@ class ParticipantController extends Controller
             $query = $em->createQueryBuilder()
                 ->select('p')
                 ->from('ScoutEventDataBundle:Participant', 'p')
-                ->leftJoin('p.groupUnit', 'g')
-                ->where('p.event = :event AND (g.owner = :user OR p.owner = :user)');
+                ->join('p.groupUnit', 'g', 'WITH', 'g.owner = :user OR p.owner = :user')
+                ->where('p.event = :event');
             $query->setParameter('user', $user);
         }
-        $query->addSelect('COUNT(h.participant) as health_forms');
-        $query->leftJoin('ScoutEventDataBundle:HealthForm', 'h');
-        $query->andWhere('h.participant = p');
+        $subQuery = $em->createQueryBuilder();
+        $subQuery->select('COUNT(h)')
+                 ->from('ScoutEventDataBundle:HealthForm', 'h')
+                 ->where('h.participant = p');
+        $query->addSelect(sprintf('(%s) AS health_forms', $subQuery->getDql()));
         $query->setParameter('event', $event);
-        
-        
         
         return $this->render(
             'ScoutEventManagementBundle:Participant:list.html.twig',
@@ -155,6 +156,65 @@ class ParticipantController extends Controller
             }
         }
 
+        $form = $this->createForm(new MultipleParticipantType(), null, array(
+            'action' => $this->generateUrl('scout_participant_create', array(
+                'eventId' => $eventId
+            )),
+            'event' => $event,
+            'user' => $user,
+            'em' => $em
+        ));
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+            $data = $form->getData();
+            
+            foreach ($data['participants'] as $participant) {
+                $participant->setEvent($data['event']);
+                $participant->setGroupUnit($data['groupUnit']);
+                $em->persist($participant);
+                
+                if (!$this->checkUser($em, $participant)) {
+                    $this->sendNewParticipantEmail($participant);
+                }
+            }
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('scout_participant_list', array(
+                'eventId' => $eventId
+            )));
+        }
+
+        return $this->render(
+            'ScoutEventManagementBundle:Participant:create.html.twig',
+            array(
+                'form' => $form->createView(),
+                'eventId' => $eventId
+            )
+        );
+    }
+    
+    /*
+    public function createAction(Request $request, $eventId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $event = $em->getRepository('ScoutEventDataBundle:Event')->find($eventId);
+        
+        $token = $this->container->get('security.context')->getToken();
+        $user = $token->getUser();
+        
+        if ($this->isAdmin()) {
+            // That's ok
+        } else {
+            // Check they have a group in the event
+            $query = $em->createQuery('select COUNT(*) from ScoutEvent\DataBundle\Entity\GroupUnit g WHERE g.owner = :user');
+            $query->setParameter("user", $user);
+            if ($query->getSingleScalarResult() == 0) {
+                // No, you're not allowed!
+                throw new AccessDeniedException();
+            }
+        }
+
         $participant = new Participant();
         $participant->setYoungPerson(true);
         $form = $this->createForm(new ParticipantType(), $participant, array(
@@ -174,7 +234,6 @@ class ParticipantController extends Controller
 
             if (!$this->checkUser($em, $participant)) {
                 $this->sendNewParticipantEmail($participant);
-                die("Sending update email");
             }
 
             return $this->redirect($this->generateUrl('scout_participant_list', array(
@@ -190,6 +249,7 @@ class ParticipantController extends Controller
             )
         );
     }
+    */
 
     public function editAction(Request $request, $participantId)
     {

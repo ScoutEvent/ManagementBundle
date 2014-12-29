@@ -1,5 +1,57 @@
 {% extends 'ScoutEventBaseBundle:Default:base.html.twig' %}
 
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+
+jQuery(document).ready(function() {
+    // setup an "add a tag" link
+    var $addParticipantLink = $('<button class="add_participant_link">Add a participant</button>');
+    var $newLinkDiv = $('<div/>').append($addParticipantLink);
+
+    // Get the ul that holds the collection of participants
+    var $collectionHolder = $('#multiple_participant_participants');
+
+    // add the "add a tag" anchor and li to the tags ul
+    $collectionHolder.append($newLinkDiv);
+
+    // count the current form inputs we have (e.g. 2), use that as the new
+    // index when inserting a new item (e.g. 2)
+    $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+    $addParticipantLink.on('click', function(e) {
+        // prevent the link from creating a "#" on the URL
+        e.preventDefault();
+
+        // add a new tag form (see next code block)
+        addParticipantForm($collectionHolder, $newLinkDiv);
+    });
+    
+    function addParticipantForm($collectionHolder, $newLinkDiv) {
+        // Get the data-prototype explained earlier
+        var prototype = $collectionHolder.data('prototype');
+
+        // get the new index
+        var index = $collectionHolder.data('index');
+
+        // Replace '__name__' in the prototype's HTML to
+        // instead be a number based on how many items we have
+        var newForm = prototype.replace(/__name__label__/g, index)
+                               .replace(/__name__/g, index);
+
+        // increase the index with one for the next item
+        $collectionHolder.data('index', index + 1);
+
+        // Display the form in the page in an li, before the "Add a tag" link li
+        var $newFormDiv = $('<div/>').append(newForm);
+        // Default checkbox
+        $newFormDiv.find("input[type='checkbox']").prop("checked", true);
+        $newLinkDiv.before($newFormDiv);
+    }
+});
+</script>
+{% endblock %}
+
 {% block body %}
     <div class="col-sm-10 col-sm-offset-1 singlebody">
         <h1 class="page-header">
@@ -8,7 +60,17 @@
                 <a href="{{ path('scout_participant_list', {'eventId': eventId}) }}" class="btn btn-danger">Cancel</a>
             </div>
         </h1>
-        {{ form(form) }}
+        {{ form_start(form) }}
+        {{ form_row(form.event) }}
+        {{ form_row(form.groupUnit) }}
+        {{ form_row(form.participants) }}
+        <ul class="participants" data-prototype="{{ form_widget(form.participants.vars.prototype)|e }}">
+            {% for participant in form.participants %}
+                <li>{{ form_row(participant.name) }}</li>
+            {% endfor %}
+            {{ form_widget(form.participants.vars.prototype.name)|e }}
+        </ul>
+        {{ form_end(form) }}
         <div class="clearfix"></div>
         <div class="clearfix">&nbsp;</div>
     </div>
