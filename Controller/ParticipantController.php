@@ -195,63 +195,6 @@ class ParticipantController extends Controller
             )
         );
     }
-    
-    /*
-    public function createAction(Request $request, $eventId)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $event = $em->getRepository('ScoutEventDataBundle:Event')->find($eventId);
-        
-        $token = $this->container->get('security.context')->getToken();
-        $user = $token->getUser();
-        
-        if ($this->isAdmin()) {
-            // That's ok
-        } else {
-            // Check they have a group in the event
-            $query = $em->createQuery('select COUNT(*) from ScoutEvent\DataBundle\Entity\GroupUnit g WHERE g.owner = :user');
-            $query->setParameter("user", $user);
-            if ($query->getSingleScalarResult() == 0) {
-                // No, you're not allowed!
-                throw new AccessDeniedException();
-            }
-        }
-
-        $participant = new Participant();
-        $participant->setYoungPerson(true);
-        $form = $this->createForm(new ParticipantType(), $participant, array(
-            'action' => $this->generateUrl('scout_participant_create', array(
-                'eventId' => $eventId
-            )),
-            'event' => $event,
-            'user' => $user,
-            'em' => $em
-        ));
-        $form->handleRequest($request);
-        
-        if ($form->isValid()) {
-            $participant = $form->getData();
-            $em->persist($participant);
-            $em->flush();
-
-            if (!$this->checkUser($em, $participant)) {
-                $this->sendNewParticipantEmail($participant);
-            }
-
-            return $this->redirect($this->generateUrl('scout_participant_list', array(
-                'eventId' => $eventId
-            )));
-        }
-
-        return $this->render(
-            'ScoutEventManagementBundle:Participant:create.html.twig',
-            array(
-                'form' => $form->createView(),
-                'eventId' => $eventId
-            )
-        );
-    }
-    */
 
     public function editAction(Request $request, $participantId)
     {

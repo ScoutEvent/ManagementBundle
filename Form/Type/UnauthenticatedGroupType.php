@@ -8,7 +8,9 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
-class GroupType extends AbstractType
+use ScoutEvent\ManagementBundle\Form\DataTransformer\EmailUserTransformer;
+
+class UnauthenticatedGroupType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -16,10 +18,10 @@ class GroupType extends AbstractType
             'label' => 'Group name'
         ));
         $builder->add('contact', 'text');
-        $builder->add('owner', 'entity', array(
-            'class' => 'ScoutEventBaseBundle:User',
-            'label' => 'User'
-        ));
+        $transformer = new EmailUserTransformer($options['em']);
+        $builder->add($builder->create('owner', 'email', array(
+            'label' => 'Email'
+        ))->addModelTransformer($transformer));
         $builder->add('phone', 'text');
         
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -54,6 +56,10 @@ class GroupType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'ScoutEvent\DataBundle\Entity\GroupUnit'
+        ))->setRequired(array(
+            'em'
+        ))->setAllowedTypes(array(
+            'em' => 'Doctrine\Common\Persistence\ObjectManager'
         ));
     }
 

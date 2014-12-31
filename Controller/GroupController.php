@@ -4,8 +4,11 @@ namespace ScoutEvent\ManagementBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+
 use ScoutEvent\ManagementBundle\Form\Type\GroupType;
+use ScoutEvent\ManagementBundle\Form\Type\UnauthenticatedGroupType;
 use ScoutEvent\DataBundle\Entity\GroupUnit;
+use ScoutEvent\PasswordResetBundle\Entity\PasswordReset;
 
 class GroupController extends Controller
 {
@@ -26,8 +29,13 @@ class GroupController extends Controller
     
     public function createAction(Request $request)
     {
-        $form = $this->createForm(new GroupType(), new GroupUnit(), array(
-            'action' => $this->generateUrl('scout_group_create')
+        $authenticated = ($this->get('security.authorization_checker')->isGranted('ROLE_GROUP_ADMIN') === true);
+
+        $type = $authenticated ? new GroupType() : new UnauthenticatedGroupType();
+
+        $form = $this->createForm($type, new GroupUnit(), array(
+            'action' => $this->generateUrl('scout_group_create'),
+            'em' => $this->getDoctrine()->getManager()
         ));
         $form->handleRequest($request);
         
@@ -37,9 +45,20 @@ class GroupController extends Controller
             $group = $form->getData();
             
             $em->persist($group);
+            
+            if (!$authenticated) {
+                if (!$this->checkUser($em, $group)) {
+                    $this->sendNewGroupEmail($group);
+                }
+            }
+            
             $em->flush();
 
-            return $this->redirect($this->generateUrl('scout_group_list'));
+            if ($authenticated) {
+                return $this->redirect($this->generateUrl('scout_group_list'));
+            } else {
+                return $this->redirect($this->generateUrl('scout_base_app_list'));
+            }
         }
 
         return $this->render(
@@ -73,4 +92,78 @@ class GroupController extends Controller
             array('form' => $form->createView())
         );
     }
+
+    // Check the group owner for a new user that hasn't registered
+    // and hasn't got a pending password reset.  If so, send a password reset.
+    private function checkUser($em, $group)
+    {
+        $user = $group->getOwner();
+        if ($user->getPassword() != '')
+        {
+            // Already registered, no need to send reset
+            return false;
+        }
+        $qb = $em->createQueryBuilder();
+        $qb->select('count(p.token)');
+        $qb->from('ScoutEventPasswordResetBundle:PasswordReset', 'p');
+        $qb->where('p.user = :user')->setParameter('user', $user);
+        if ($qb->getQuery()->getSingleScalarResult() > 0) {
+            // Already have a password reset, no need to send reset
+            return false;
+        }
+        
+        // Create new password reset request
+        $reset = new PasswordReset($group->getOwner());
+        $em->persist($reset);
+        $em->flush();
+        
+        // Send password reset email
+        $message = \Swift_Message::newInstance();
+        $message->setFrom($this->container->getParameter('mailer_from'));
+        $message->setSubject($group->getName() . ' Registration');
+        
+        $resetLink = $this->generateUrl('scout_password_reset', array(
+            'token' => $reset->getToken()
+        ));
+        $resetLink = $this->getRequest()->getUriForPath($resetLink);
+        $message->setTo($group->getOwner()->getEmail())
+            ->setBody(
+                $this->renderView(
+                    'ScoutEventManagementBundle:Email:group_registration.txt.twig',
+                    array(
+                        'group' => $group,
+                        'resetLink' => $resetLink
+                    )
+                )
+            );
+        $this->get('mailer')->send($message);
+        
+        return true;
+    }
+    
+    // Send email to existing user to tell them they have a new group.
+    private function sendNewGroupEmail($group)
+    {
+        // Send password reset email
+        $message = \Swift_Message::newInstance();
+        $message->setFrom($this->container->getParameter('mailer_from'));
+        $message->setSubject($group->getName() . ' Registration');
+        
+        $formLink = $this->generateUrl('scout_base_app_list');
+        $formLink = $this->getRequest()->getUriForPath($formLink);
+        $message->setTo($group->getOwner()->getEmail())
+            ->setBody(
+                $this->renderView(
+                    'ScoutEventManagementBundle:Email:group_additionalRegistration.txt.twig',
+                    array(
+                        'group' => $group,
+                        'formLink' => $formLink
+                    )
+                )
+            );
+        $this->get('mailer')->send($message);
+        
+        return true;
+    }
+
 }

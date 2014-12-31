@@ -35,7 +35,9 @@ scout_group_create:
     path:     /group/create
     defaults:
         _controller: ScoutEventManagementBundle:Group:create
-        roles: [ ROLE_GROUP_ADMIN ]
+        application:
+            icon: fa-plus-circle
+            name: Create Group
 
 scout_group_edit:
     path:     /group/edit/{groupId}
