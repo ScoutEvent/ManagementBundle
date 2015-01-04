@@ -31,12 +31,16 @@ class GroupController extends Controller
     {
         $authenticated = ($this->get('security.authorization_checker')->isGranted('ROLE_GROUP_ADMIN') === true);
 
-        $type = $authenticated ? new GroupType() : new UnauthenticatedGroupType();
-
-        $form = $this->createForm($type, new GroupUnit(), array(
-            'action' => $this->generateUrl('scout_group_create'),
-            'em' => $this->getDoctrine()->getManager()
-        ));
+        if ($authenticated) {
+            $form = $this->createForm(new GroupType(), new GroupUnit(), array(
+                'action' => $this->generateUrl('scout_group_create')
+            ));
+        } else {
+            $form = $this->createForm(new UnauthenticatedGroupType(), new GroupUnit(), array(
+                'action' => $this->generateUrl('scout_group_create'),
+                'em' => $this->getDoctrine()->getManager()
+            ));
+        }
         $form->handleRequest($request);
         
         if ($form->isValid()) {
@@ -47,6 +51,7 @@ class GroupController extends Controller
             $em->persist($group);
             
             if (!$authenticated) {
+                // Unauthenticated creates a new owner
                 if (!$this->checkUser($em, $group)) {
                     $this->sendNewGroupEmail($group);
                 }
