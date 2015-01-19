@@ -61,7 +61,9 @@ class LoggedInUserListener
                      ->from('ScoutEventDataBundle:HealthForm', 'h')
                      ->where('h.participant = p');
             $query->addSelect(sprintf('(%s) AS health_forms', $subQuery->getDql()))
-                ->where('health_forms = 0 AND p.owner = :user')
+                ->where('p.owner = :user')
+                ->groupBy('p')
+                ->having('health_forms = 0')
                 ->setParameter('user', $user)
                 ->setMaxResults(1);
             
