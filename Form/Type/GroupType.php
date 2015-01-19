@@ -16,10 +16,24 @@ class GroupType extends AbstractType
             'label' => 'Group name'
         ));
         $builder->add('contact', 'text');
-        $builder->add('owner', 'entity', array(
-            'class' => 'ScoutEventBaseBundle:User',
-            'label' => 'User'
-        ));
+        if ($options['admin'] === true)
+        {
+            $builder->add('owner', 'entity', array(
+                'class' => 'ScoutEventBaseBundle:User',
+                'label' => 'User',
+                'data' => $options['user']
+            ));
+        }
+        else
+        {
+            $builder->add('owner', 'entity', array(
+                'class' => 'ScoutEventBaseBundle:User',
+                'label' => 'User',
+                'read_only' => true,
+                'data' => $options['user'],
+                'choices' => array($options['user'])
+            ));
+        }
         $builder->add('phone', 'text');
         
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -53,7 +67,9 @@ class GroupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'ScoutEvent\DataBundle\Entity\GroupUnit'
+            'data_class' => 'ScoutEvent\DataBundle\Entity\GroupUnit',
+            'admin' => 'string',
+            'user' => 'ScoutEvent\DataBundle\Entity\User'
         ));
     }
 

@@ -24,6 +24,9 @@ class EventType extends AbstractType
             'class' => 'ScoutEventBaseBundle:User',
             'label' => 'User'
         ));
+        $builder->add('link', 'url', array(
+            'required' => false
+        ));
         $builder->add('location', 'textarea');
         $builder->add('summary', 'textarea');
         

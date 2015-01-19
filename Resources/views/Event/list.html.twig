@@ -18,7 +18,13 @@
             <tbody>
                 {% for event in events %}
                     <tr>
-                        <td>{{ event.getName }}</td>
+                        <td>
+                            {% if event.getLink != null %}
+                                <a href="{{ event.getLink }}" rel="nofollow">{{ event.getName }}</a>
+                            {% else %}
+                                {{ event.getName }}
+                            {% endif %}
+                        </td>
                         <td>{{ event.getCoordinator }}</td>
                         <td>{{ event.getLocation }}</td>
                         <td>
@@ -39,7 +45,7 @@
                     <tr>
                         <td colspan="5" class="text-right">
                             <a href="{{ path('scout_event_create') }}" class="btn btn-default">
-                                <i class="fa fa-plus"></i> Create
+                                <i class="fa fa-plus"></i> Create Event
                             </a>
                         </td>
                     </tr>

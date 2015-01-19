@@ -1,3 +1,11 @@
+scout_overview_list:
+    path:     /overview
+    defaults:
+        _controller: ScoutEventManagementBundle:Overview:list
+        application:
+            icon: fa-info-circle
+            name: Overview
+
 scout_event_list:
     path:     /event/list
     defaults:

@@ -150,7 +150,7 @@ class ParticipantController extends Controller
             // That's ok
         } else {
             // Check they have a group in the event
-            $query = $em->createQuery('select COUNT(*) from ScoutEvent\DataBundle\Entity\GroupUnit g WHERE g.owner = :user');
+            $query = $em->createQuery('select COUNT(g) from ScoutEvent\DataBundle\Entity\GroupUnit g WHERE g.owner = :user');
             $query->setParameter("user", $user);
             if ($query->getSingleScalarResult() == 0) {
                 // No, you're not allowed!

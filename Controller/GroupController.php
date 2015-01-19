@@ -29,11 +29,13 @@ class GroupController extends Controller
     
     public function createAction(Request $request)
     {
-        $authenticated = ($this->get('security.authorization_checker')->isGranted('ROLE_GROUP_ADMIN') === true);
+        $authenticated = ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY') === true);
 
         if ($authenticated) {
             $form = $this->createForm(new GroupType(), new GroupUnit(), array(
-                'action' => $this->generateUrl('scout_group_create')
+                'action' => $this->generateUrl('scout_group_create'),
+                'admin' => $this->get('security.context')->isGranted('ROLE_GROUP_ADMIN'),
+                'user' => $this->container->get('security.context')->getToken()->getUser()
             ));
         } else {
             $form = $this->createForm(new UnauthenticatedGroupType(), new GroupUnit(), array(

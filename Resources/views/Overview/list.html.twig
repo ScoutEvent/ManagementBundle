@@ -1,0 +1,51 @@
+{% extends 'ScoutEventBaseBundle:Default:base.html.twig' %}
+
+{% block body %}
+    <div class="col-sm-10 col-sm-offset-1 singlebody">
+        <h1 class="page-header">Overview</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Contact</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results %}
+                    <tr>
+                        <td>{{ result.group.getName }}</td>
+                        <td>{{ result.group.getContact }}</td>
+                        <td>{{ result.group.getOwner.getEmail }}</td>
+                        <td>{{ result.group.getPhone }}</td>
+                    </tr>
+                    {% if result.events %}
+                        <tr>
+                            <td colspan="4">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Event</th>
+                                            <th>Participants</th>
+                                            <th>Health forms complete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for event in result.events %}
+                                            <tr>
+                                                <td>{{ event.name }}</td>
+                                                <td>{{ event.participants }}</td>
+                                                <td>{{ event.completed }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>                    
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
