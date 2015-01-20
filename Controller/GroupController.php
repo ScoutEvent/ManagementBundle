@@ -29,13 +29,15 @@ class GroupController extends Controller
     
     public function createAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         $authenticated = ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY') === true);
 
         if ($authenticated) {
             $form = $this->createForm(new GroupType(), new GroupUnit(), array(
                 'action' => $this->generateUrl('scout_group_create'),
                 'admin' => $this->get('security.context')->isGranted('ROLE_GROUP_ADMIN'),
-                'user' => $this->container->get('security.context')->getToken()->getUser()
+                'user' => $this->container->get('security.context')->getToken()->getUser(),
+                'em' => $em
             ));
         } else {
             $form = $this->createForm(new UnauthenticatedGroupType(), new GroupUnit(), array(
@@ -46,8 +48,6 @@ class GroupController extends Controller
         $form->handleRequest($request);
         
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-
             $group = $form->getData();
             
             $em->persist($group);
@@ -80,7 +80,10 @@ class GroupController extends Controller
         $group = $em->getRepository('ScoutEventDataBundle:GroupUnit')->find($groupId);
     
         $form = $this->createForm(new GroupType(), $group, array(
-            'action' => $this->generateUrl('scout_group_edit', array("groupId" => $groupId))
+            'action' => $this->generateUrl('scout_group_edit', array("groupId" => $groupId)),
+            'admin' => $this->get('security.context')->isGranted('ROLE_GROUP_ADMIN'),
+            'user' => $this->container->get('security.context')->getToken()->getUser(),
+            'em' => $em
         ));
         $form->handleRequest($request);
 

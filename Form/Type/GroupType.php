@@ -8,6 +8,8 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
+use ScoutEvent\ManagementBundle\Form\DataTransformer\AssistantUserTransformer;
+
 class GroupType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -34,8 +36,17 @@ class GroupType extends AbstractType
                 'choices' => array($options['user'])
             ));
         }
+
         $builder->add('phone', 'text');
-        
+
+        $transformer = new AssistantUserTransformer($options['em']);
+        $builder->add($builder->create('assistants', 'collection', array(
+            'type' => new AssistantType(),
+            'allow_add' => true,
+            'by_reference' => false,
+            'allow_delete' => true
+        ))->addModelTransformer($transformer));
+
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $entity = $event->getData();
             $form = $event->getForm();
@@ -67,9 +78,14 @@ class GroupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'ScoutEvent\DataBundle\Entity\GroupUnit',
-            'admin' => 'string',
-            'user' => 'ScoutEvent\DataBundle\Entity\User'
+            'data_class' => 'ScoutEvent\DataBundle\Entity\GroupUnit'
+        ))->setRequired(array(
+            'em',
+            'admin',
+            'user'
+        ))->setAllowedTypes(array(
+            'em' => 'Doctrine\Common\Persistence\ObjectManager',
+            'user' => 'ScoutEvent\BaseBundle\Entity\User'
         ));
     }
 

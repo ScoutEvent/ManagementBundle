@@ -19,8 +19,12 @@ class HealthFormMedicalType extends AbstractType
             'label' => 'Address'
         ));
         
-        $builder->add('allergies', 'textarea');
-        $builder->add('dietary', 'textarea');
+        $builder->add('allergies', 'textarea', array(
+            'required' => false
+        ));
+        $builder->add('dietary', 'textarea', array(
+            'required' => false
+        ));
     }
 
     public function getName()
