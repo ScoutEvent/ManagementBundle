@@ -54,20 +54,19 @@ class AssistantUserTransformer implements DataTransformerInterface
         foreach ($array as $key => $value) {
             $user = $this->om
                 ->getRepository('ScoutEventBaseBundle:User')
-                ->findOneBy(array('email' => $value));
+                ->findOneBy(array('email' => $value->getEmail()));
             
             if (is_null($user)) {            
                 // Create new user, but don't set the password
-                $user = new User();
-                $user->setEmail($value);
-                $user->setIsActive(true);
-                $user->setPassword("");  // Disabled - blank hash
+                $user = $value;
                 $this->om->persist($user);
-                $this->om->flush();
+            } else {
+                $this->om->remove($value);
             }
             
             $newArray[$key] = $user;
         }
+        $this->om->flush();
  
         return new PersistentCollection($this->om, 'ScoutEvent\BaseBundle\Entity\User', new ArrayCollection($newArray));
     }

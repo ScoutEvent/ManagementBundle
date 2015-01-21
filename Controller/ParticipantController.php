@@ -32,7 +32,7 @@ class ParticipantController extends Controller
         $user = $this->container->get('security.context')->getToken()->getUser();
         $admin = $this->isAdmin();
         
-        if ($admin) {
+        if (false && $admin) {
             // Group admin, select all
             $query = $em->createQueryBuilder()
                 ->select('p')
@@ -43,8 +43,9 @@ class ParticipantController extends Controller
             $query = $em->createQueryBuilder()
                 ->select('p')
                 ->from('ScoutEventDataBundle:Participant', 'p')
-                ->join('p.groupUnit', 'g', 'WITH', 'g.owner = :user OR p.owner = :user')
-                ->where('p.event = :event');
+                ->join('p.groupUnit', 'g')
+                ->join('g.assistants', 'a')
+                ->where('p.event = :event AND (g.owner = :user OR p.owner = :user OR a = :user)');
             $query->setParameter('user', $user);
         }
         $subQuery = $em->createQueryBuilder();
@@ -53,6 +54,8 @@ class ParticipantController extends Controller
                  ->where('h.participant = p');
         $query->addSelect(sprintf('(%s) AS health_forms', $subQuery->getDql()));
         $query->setParameter('event', $event);
+        
+        print_r($query->getQuery()->getSql());
         
         return $this->render(
             'ScoutEventManagementBundle:Participant:list.html.twig',
@@ -208,7 +211,7 @@ class ParticipantController extends Controller
         
         if ($this->isAdmin()) {
             // That's ok
-        } else if ($participant->getGroupUnit()->getOwner()->getId() == $user->getId()) {
+        } else if ($participant->getGroupUnit()->isManager($user)) {
             // Yep, fine...
         } else {
             // No, you're not allowed!
