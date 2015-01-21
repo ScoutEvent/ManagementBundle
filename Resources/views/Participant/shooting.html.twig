@@ -1,0 +1,101 @@
+{% extends 'ScoutEventBaseBundle:Default:base.html.twig' %}
+
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+jQuery(function ($) {
+    alert('Please be sure to sign the bottom of this form and bring it with you to the event!  No form, no shooting.');
+    window.print();
+});
+</script>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style type="text/css">
+    @font-face {
+        font-family: Code39AzaleaFont;
+        src: url('{{ asset('bundles/scouteventmanagement/fonts/Code39Azalea.eot') }}') format('embedded-opentype'), /* IE9 Compat Modes */
+             url('{{ asset('bundles/scouteventmanagement/fonts/Code39Azalea.woff') }}') format('woff'), /* Modern Browsers */
+             url('{{ asset('bundles/scouteventmanagement/fonts/Code39Azalea.ttf') }}') format('truetype'), /* Safari, Android, iOS */
+             url('{{ asset('bundles/scouteventmanagement/fonts/Code39Azalea.svg') }}#Code39Azalea') format('svg'); /* Legacy iOS */
+        font-weight: normal;
+        font-style: normal;
+    }
+    .barcode {
+        font-family:Code39AzaleaFont;
+        font-size:48pt;
+        margin:0px;
+    }
+</style>
+<style type="text/css" media="print">
+    .container-fluid {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<table class="table print" border='1'>
+    <tbody>
+        <tr>
+            <td colspan='2'>
+                <strong>Shooting Permission Form</strong>
+            </td>
+	    </tr>
+	    <tr>
+        	<td width="50%">
+                <strong>Event Name:</strong> {{ participant.getEvent.getName }} <br/>
+                <strong>Event Leader:</strong> {{ participant.getEvent.coordinator }} <br/>
+                <strong>Start Date:</strong> {{ participant.getEvent.getStartTime|date('d/m/Y') }} <br/>
+                <strong>End Date:</strong> {{ participant.getEvent.getEndTime|date('d/m/Y') }} <br/>
+            </td>
+	        <td width="50%"><!-- Event logo --></td>
+	    </tr>
+	    <tr>
+	        <td colspan='2'>
+	            Please cut and keep above this line for your information. Below this line 
+	            must be signed and brought with your young person to the event
+	        </td>
+	    </tr>
+    	<tr>
+	        <td width="50%">
+	            <strong>Name:</strong> {{ participant.getName }} <br/>
+                <strong>Participant Address:</strong> {{ healthForm.getAddress }} <br/>
+                <strong>Emergency Phone Number:</strong> {{ healthForm.getEmergencyPhone }} <br/>
+	        </td>
+	        <td width="50%">
+	            <strong>Group:</strong> {{ participant.getGroupUnit.getName }} <br/>
+                <strong>Group ID:</strong> {{ participant.getGroupUnit.getId }} <br/>
+                <strong>Leader Name:</strong> {{ participant.getGroupUnit.getContact }} <br/>
+                <strong>Leader Phone:</strong> {{ participant.getGroupUnit.getPhone }} <br/>
+	        </td>
+    	</tr>
+	    <tr>
+            <td colspan='2'>
+                <strong>Parent/Guardian Consent<br/><br/></strong>
+                I, being the parent/guardian of the person named below, declare that he/she is not subject to
+                restriction by virtue of Section 21 of the Firearms Act 1968 (which applies only to persons who have
+                served a term of imprisonment or youth custody) and give permission for: <br/><strong> {{ participant.getName }} </strong><br/> 
+                to take part in Air Rifle Target Shooting during <br/><strong>{{ participant.getEvent.getName }}</strong><br/>
+                {% if participant.getEvent.getStartTime|date('d/m/Y') == participant.getEvent.getEndTime|date('d/m/Y') %}
+                    on <br/><strong>{{ participant.getEvent.getStartTime|date('d/m/Y') }}</strong>
+                {% else %}
+                    from <br/><strong>{{ participant.getEvent.getStartTime|date('d/m/Y') }}</strong><br/>
+                    to <br/><strong>{{ participant.getEvent.getEndTime|date('d/m/Y') }}</strong>
+                {% endif %}
+                <br/><br/>
+                <strong>Relevant Medical Details:</strong> <br/><br/>
+                <strong>Name:</strong> <br/><br/>
+                <strong>Signed:</strong> <br/><br/>
+                <strong>Date:</strong>
+            </td>
+	    </tr>
+	    <tr>
+	        <td colspan='2'>
+	            For Admin Use: <p class='barcode'>*{{ participant.getId }}*</p><br/>
+	        </td>
+	    </tr>
+	</tbody>
+</table>
+{% endblock %}

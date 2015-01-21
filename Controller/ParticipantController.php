@@ -269,6 +269,33 @@ class ParticipantController extends Controller
         );
     }
     
+    public function shootingAction($participantId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $participant = $em->getRepository('ScoutEventDataBundle:Participant')->find($participantId);
+        
+        if ($participant->getOwner()->getId() != $this->container->get('security.context')->getToken()->getUser()->getId())
+        {
+            throw new AccessDeniedException();
+        }
+        
+        $healthForm = $em->getRepository('ScoutEventDataBundle:HealthForm')->findOneBy(array('participant' => $participant));
+        if ($healthForm === null)
+        {
+            return $this->redirect($this->generateUrl('scout_participant_list', array(
+                'eventId' => $participant->getEvent()->getId()
+            )));
+        }
+        
+        return $this->render(
+            'ScoutEventManagementBundle:Participant:shooting.html.twig',
+            array(
+                'healthForm' => $healthForm,
+                'participant' => $participant
+            )
+        );
+    }
+    
     public function healthFormAction(Request $request, $participantId)
     {
         $em = $this->getDoctrine()->getManager();
@@ -292,6 +319,8 @@ class ParticipantController extends Controller
         }
         
         $flow = $this->get('scout.form.flow.healthForm'); // must match the flow's service id
+        $flow->setSwimming($participant->getYoungPerson()
+                           && $participant->getEvent()->getSwimming());
         $flow->bind($healthForm);
 
         // form of the current step
@@ -309,6 +338,18 @@ class ParticipantController extends Controller
                 $em->flush();
 
                 $flow->reset(); // remove step data from the session
+
+                if ($participant->getYoungPerson()
+                        && $participant->getEvent()->getShooting())
+                {
+                    return $this->render(
+                        'ScoutEventManagementBundle:Participant:shooting.html.twig',
+                        array(
+                            'healthForm' => $healthForm,
+                            'participant' => $participant
+                        )
+                    );
+                }
 
                 return $this->redirect($this->generateUrl('scout_participant_list', array(
                     'eventId' => $participant->getEvent()->getId()

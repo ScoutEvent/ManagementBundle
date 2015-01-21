@@ -29,7 +29,15 @@ class EventType extends AbstractType
         ));
         $builder->add('location', 'textarea');
         $builder->add('summary', 'textarea');
-        
+        $builder->add('swimming', 'checkbox', array(
+            'label' => 'Will there be swimming at this event?',
+            'required' => false
+        ));
+        $builder->add('shooting', 'checkbox', array(
+            'label' => 'Will there be shooting at this event?',
+            'required' => false
+        ));
+
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $eventEntity = $event->getData();
             $form = $event->getForm();

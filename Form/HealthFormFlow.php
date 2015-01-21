@@ -9,8 +9,19 @@ use ScoutEvent\ManagementBundle\Form\Type\HealthFormBasicType;
 use ScoutEvent\ManagementBundle\Form\Type\HealthFormMedicalType;
 use ScoutEvent\ManagementBundle\Form\Type\HealthFormEmergencyType;
 use ScoutEvent\ManagementBundle\Form\Type\HealthFormSignatureType;
+use ScoutEvent\ManagementBundle\Form\Type\HealthFormSwimmingType;
 
 class HealthFormFlow extends FormFlow {
+
+    private $swimming;
+
+    public function __construct() {
+        $this->swimming = false;
+    }
+
+    public function setSwimming($swimming) {
+        $this->swimming = $swimming;
+    }
 
     public function getName() {
         return 'healthForm';
@@ -29,6 +40,13 @@ class HealthFormFlow extends FormFlow {
             array(
                 'label' => 'Medical Details',
                 'type' => new HealthFormMedicalType()
+            ),
+            array(
+                'label' => 'Swimming',
+                'type' => new HealthFormSwimmingType(),
+                'skip' => function($estimatedCurrentStepNumber, FormFlowInterface $flow) {
+                    return !$this->swimming;
+                }
             ),
             array(
                 'label' => 'Signature',

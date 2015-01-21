@@ -53,6 +53,12 @@ scout_group_edit:
         _controller: ScoutEventManagementBundle:Group:edit
         roles: [ ROLE_GROUP_ADMIN ]
 
+scout_shooting:
+    path:     /shooting_authorisation/{participantId}
+    defaults:
+        _controller: ScoutEventManagementBundle:Participant:shooting
+        roles: [ IS_AUTHENTICATED_FULLY ]
+
 scout_participant_list:
     path:     /event/{eventId}/participants
     defaults:

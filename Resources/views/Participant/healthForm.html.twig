@@ -8,7 +8,21 @@
         <form method="post" {{ form_enctype(form) }}>
             {{ form_errors(form) }}
 
+            {% if flow.getCurrentStepLabel() == 'Signature' %}
+                <div>
+                    <p>I consent to my child undertaking activities with the Scout Association and its agents. I understand that the Scout Leader in charge reserves the right to send any participants home if necessary. If it becomes necessary for my child to receive medical/dental treatment and I cannot be contacted by telephone or any other means to authorise this, I hereby give my general consent to any necessary medical/dental treatment and authorise the Scout Leader in charge to sign any document required by the medical/dental authorities. I also understand that photos and videos will be taken during this event and may be used by Scouting to promote events and scouting in the future.</p>
+
+                    <p>By putting your name in the box below and submitting this form you are giving consent to the above in the form of an electronic signature & giving permission for this data to be stored and transferred inline with the Data Protection Act 1998.</p>
+                </div>
+            {% endif %}
+    
             {{ form_rest(form) }}
+
+            {% if flow.getCurrentStepLabel() == 'Signature' %}
+                <div>
+                    <p>Note: The medical/dental professions take the view that the parent's consent to treatment cannot be delegated. This view is explicit in the Children Act 1989. Thus consent forms have no legal status and a doctor/nurse etc insisting on the consent of a parent to a particular treatment has the right to do so. For this reason we do not recommend that Leaders insist on parents signing the statement above. However, it can be a comfort to medical/dental staff to have general consent in advance from parents or to have a Leader on hand able to sign forms required by these professions.</p>
+                </div>
+            {% endif %}
 
             {% include 'CraueFormFlowBundle:FormFlow:buttons.html.twig' with {
                 craue_formflow_button_class_last: 'btn btn-primary',
