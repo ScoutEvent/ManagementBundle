@@ -32,7 +32,7 @@ class ParticipantController extends Controller
         $user = $this->container->get('security.context')->getToken()->getUser();
         $admin = $this->isAdmin();
         
-        if (false && $admin) {
+        if ($admin) {
             // Group admin, select all
             $query = $em->createQueryBuilder()
                 ->select('p')
@@ -43,8 +43,8 @@ class ParticipantController extends Controller
             $query = $em->createQueryBuilder()
                 ->select('p')
                 ->from('ScoutEventDataBundle:Participant', 'p')
-                ->join('p.groupUnit', 'g')
-                ->join('g.assistants', 'a')
+                ->leftJoin('p.groupUnit', 'g')
+                ->leftJoin('g.assistants', 'a')
                 ->where('p.event = :event AND (g.owner = :user OR p.owner = :user OR a = :user)');
             $query->setParameter('user', $user);
         }
