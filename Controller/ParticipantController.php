@@ -55,8 +55,6 @@ class ParticipantController extends Controller
         $query->addSelect(sprintf('(%s) AS health_forms', $subQuery->getDql()));
         $query->setParameter('event', $event);
         
-        print_r($query->getQuery()->getSql());
-        
         return $this->render(
             'ScoutEventManagementBundle:Participant:list.html.twig',
             array(
