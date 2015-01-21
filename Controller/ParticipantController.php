@@ -342,13 +342,9 @@ class ParticipantController extends Controller
                 if ($participant->getYoungPerson()
                         && $participant->getEvent()->getShooting())
                 {
-                    return $this->render(
-                        'ScoutEventManagementBundle:Participant:shooting.html.twig',
-                        array(
-                            'healthForm' => $healthForm,
-                            'participant' => $participant
-                        )
-                    );
+                    return $this->redirect($this->generateUrl('scout_shooting', array(
+                        'participantId' => $participant->getId()
+                    )));
                 }
 
                 return $this->redirect($this->generateUrl('scout_participant_list', array(
