@@ -3,24 +3,19 @@
 namespace ScoutEvent\ManagementBundle\Form;
 
 use Craue\FormFlowBundle\Form\FormFlow;
-use Craue\FormFlowBundle\Form\FormFlowInterface;
 
 use ScoutEvent\ManagementBundle\Form\Type\HealthFormBasicType;
 use ScoutEvent\ManagementBundle\Form\Type\HealthFormMedicalType;
 use ScoutEvent\ManagementBundle\Form\Type\HealthFormEmergencyType;
 use ScoutEvent\ManagementBundle\Form\Type\HealthFormSignatureType;
-use ScoutEvent\ManagementBundle\Form\Type\HealthFormSwimmingType;
 
 class HealthFormFlow extends FormFlow {
 
-    private $swimming;
+    private $additionProvider;
 
-    public function __construct() {
-        $this->swimming = false;
-    }
-
-    public function setSwimming($swimming) {
-        $this->swimming = $swimming;
+    public function __construct(HealthFormAdditionalChain $additionProvider)
+    {
+        $this->additionProvider = $additionProvider;
     }
 
     public function getName() {
@@ -28,7 +23,7 @@ class HealthFormFlow extends FormFlow {
     }
 
     protected function loadStepsConfig() {
-        return array(
+        $basic = array(
             array(
                 'label' => 'Basic Details',
                 'type' => new HealthFormBasicType()
@@ -40,18 +35,18 @@ class HealthFormFlow extends FormFlow {
             array(
                 'label' => 'Medical Details',
                 'type' => new HealthFormMedicalType()
-            ),
-            array(
-                'label' => 'Swimming',
-                'type' => new HealthFormSwimmingType(),
-                'skip' => function($estimatedCurrentStepNumber, FormFlowInterface $flow) {
-                    return !$this->swimming;
-                }
-            ),
+            )
+        );
+        
+        $additions = $this->additionProvider->getAdditions();
+        
+        $end = array(
             array(
                 'label' => 'Signature',
                 'type' => new HealthFormSignatureType()
-            ),
+            )
         );
+        
+        return array_merge($basic, $additions, $end);
     }
 }

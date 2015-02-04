@@ -50,6 +50,13 @@ class LoggedInUserListener
         }
         else
         {
+            $routeName = $container->get('request')->get('_route');
+            if ($this->startsWith($routeName, "scout_participant"))
+            {
+                // Allow them to fill in the form...
+                return;
+            }
+            
             // Authenticated, check for pending health form
             $user = $container->get('security.context')->getToken()->getUser();
             
@@ -71,13 +78,6 @@ class LoggedInUserListener
             if (count($result) == 0)
             {
                 // No pending health forms
-                return;
-            }
-            
-            $routeName = $container->get('request')->get('_route');
-            if ($this->startsWith($routeName, "scout_participant"))
-            {
-                // Allow them to fill in the form...
                 return;
             }
             

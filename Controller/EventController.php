@@ -26,7 +26,8 @@ class EventController extends Controller
     
     public function createAction(Request $request)
     {
-        $form = $this->createForm(new EventType(), new Event(), array(
+        $additions = $this->get('scout.event.additionChain');
+        $form = $this->createForm(new EventType($additions), new Event(), array(
             'action' => $this->generateUrl('scout_event_create')
         ));
         $form->handleRequest($request);
@@ -37,6 +38,7 @@ class EventController extends Controller
             $event = $form->getData();
             
             $em->persist($event);
+            $additions->persist($form, $event);
             $em->flush();
 
             return $this->redirect($this->generateUrl('scout_event_list'));
@@ -53,17 +55,20 @@ class EventController extends Controller
         $em = $this->getDoctrine()->getManager();
         $event = $em->getRepository('ScoutEventDataBundle:Event')->find($eventId);
     
-        $form = $this->createForm(new EventType(), $event, array(
+        $additions = $this->get('scout.event.additionChain');
+        $form = $this->createForm(new EventType($additions), $event, array(
             'action' => $this->generateUrl('scout_event_edit', array("eventId" => $eventId))
         ));
         $form->handleRequest($request);
 
         if ($form->get('Delete')->isClicked()) {
+            $additions->remove($event);
             $em->remove($event);
             $em->flush();
             return $this->redirect($this->generateUrl('scout_event_list'));
         } else if ($form->isValid()) {
             $event = $form->getData();
+            $additions->persist($form, $event);
             $em->flush();
             return $this->redirect($this->generateUrl('scout_event_list'));
         }

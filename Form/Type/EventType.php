@@ -8,8 +8,17 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
+use ScoutEvent\ManagementBundle\Form\EventAdditionChain;
+
 class EventType extends AbstractType
 {
+    private $additions;
+    
+    public function __construct(EventAdditionChain $additions)
+    {
+        $this->additions = $additions;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name', 'text');
@@ -29,10 +38,9 @@ class EventType extends AbstractType
         ));
         $builder->add('location', 'textarea');
         $builder->add('summary', 'textarea');
-        $builder->add('swimming', 'checkbox', array(
-            'label' => 'Will there be swimming at this event?',
-            'required' => false
-        ));
+        
+        $this->additions->addAdditional($builder);
+        
         $builder->add('shooting', 'checkbox', array(
             'label' => 'Will there be shooting at this event?',
             'required' => false

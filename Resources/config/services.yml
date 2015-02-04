@@ -4,6 +4,13 @@ services:
         class: ScoutEvent\ManagementBundle\Form\HealthFormFlow
         parent: craue.form.flow
         scope: request
+        arguments: [ @scout.form.flow.healthForm.additionalChain ]
+
+    scout.form.flow.healthForm.additionalChain:
+        class: ScoutEvent\ManagementBundle\Form\HealthFormAdditionalChain
+    
+    scout.event.additionChain:
+        class: ScoutEvent\ManagementBundle\Form\EventAdditionChain
 
     kernel.listener.logged_in_user_listener:
         class: ScoutEvent\ManagementBundle\Listener\LoggedInUserListener

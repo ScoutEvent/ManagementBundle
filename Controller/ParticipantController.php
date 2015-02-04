@@ -312,15 +312,14 @@ class ParticipantController extends Controller
             throw new AccessDeniedException();
         }
         
-        $healthForm = $em->getRepository('ScoutEventDataBundle:HealthForm')->findOneBy(array('participant' => $participant));
+        $healthForm = $em->getRepository('ScoutEventDataBundle:HealthForm')
+                ->findOneBy(array('participant' => $participant));
         if ($healthForm === null)
         {
             $healthForm = new HealthForm($participant);
         }
         
         $flow = $this->get('scout.form.flow.healthForm'); // must match the flow's service id
-        $flow->setSwimming($participant->getYoungPerson()
-                           && $participant->getEvent()->getSwimming());
         $flow->bind($healthForm);
 
         // form of the current step
@@ -335,6 +334,10 @@ class ParticipantController extends Controller
                 // flow finished
                 $healthForm->setSignatureDate(new \DateTime());
                 $em->persist($healthForm);
+                
+                $this->get('scout.form.flow.healthForm.additionalChain')
+                        ->additionalProcess($form, $healthForm);
+
                 $em->flush();
 
                 $flow->reset(); // remove step data from the session
