@@ -336,7 +336,7 @@ class ParticipantController extends Controller
                 $em->persist($healthForm);
                 
                 $this->get('scout.form.flow.healthForm.additionalChain')
-                        ->additionalProcess($form, $healthForm);
+                        ->additionalProcess($flow, $form, $healthForm);
 
                 $em->flush();
 

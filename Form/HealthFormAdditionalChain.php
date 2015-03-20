@@ -29,11 +29,11 @@ class HealthFormAdditionalChain
         return $stages;
     }
     
-    public function additionalProcess($form, $healthFormEntity)
+    public function additionalProcess($flow, $form, $healthFormEntity)
     {
         foreach ($this->additions as $stage)
         {
-            $stage->additionalProcess($form, $healthFormEntity);
+            $stage->additionalProcess($flow, $form, $healthFormEntity);
         }
     }
 

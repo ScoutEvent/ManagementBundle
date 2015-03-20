@@ -20,9 +20,15 @@ class HealthFormMedicalType extends AbstractType
         ));
         
         $builder->add('allergies', 'textarea', array(
+            'label' => 'Allergies (leave blank if not applicable)',
             'required' => false
         ));
         $builder->add('dietary', 'textarea', array(
+            'label' => 'Dietary (leave blank if not applicable)',
+            'required' => false
+        ));
+        $builder->add('medical', 'textarea', array(
+            'label' => 'Medical (leave blank if not applicable)',
             'required' => false
         ));
     }
