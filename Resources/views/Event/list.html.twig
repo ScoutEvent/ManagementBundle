@@ -28,9 +28,15 @@
                         <td>{{ event.getCoordinator }}</td>
                         <td>{{ event.getLocation }}</td>
                         <td>
+                            {% if authenticated %}
                             <a href="{{ path('scout_participant_list', {'eventId': event.getId}) }}" class="btn btn-default">
                                 <i class="fa fa-child"></i>My Participants
                             </a>
+                            {% else %}
+                            <a href="{{ path('scout_participant_list', {'eventId': event.getId}) }}" class="btn btn-default">
+                                <i class="fa fa-calendar"></i>Event Info
+                            </a>
+                            {% endif %}
                         </td>
                         {% if create %}
                             <td>

@@ -20,7 +20,11 @@ class EventController extends Controller
         
         return $this->render(
             'ScoutEventManagementBundle:Event:list.html.twig',
-            array('events' => $events, 'create' => $create)
+            array(
+                'events' => $events,
+                'create' => $create,
+                'authenticated' => (true === $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY'))
+            )
         );
     }
     
