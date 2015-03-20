@@ -38,6 +38,7 @@ class EventController extends Controller
             $event = $form->getData();
             
             $em->persist($event);
+            $em->flush();
             $additions->persist($form, $event);
             $em->flush();
 
@@ -68,6 +69,7 @@ class EventController extends Controller
             return $this->redirect($this->generateUrl('scout_event_list'));
         } else if ($form->isValid()) {
             $event = $form->getData();
+            $em->flush();
             $additions->persist($form, $event);
             $em->flush();
             return $this->redirect($this->generateUrl('scout_event_list'));
