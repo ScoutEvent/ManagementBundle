@@ -39,6 +39,8 @@ class ParticipantController extends Controller
     
     private function eventPage($eventId)
     {
+        $em = $this->getDoctrine()->getManager();
+        
         return $this->render(
             'ScoutEventManagementBundle:Event:display.html.twig',
             array(
