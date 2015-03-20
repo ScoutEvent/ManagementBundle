@@ -15,7 +15,7 @@
             If you are a group leader and wish to register
             members or manage your existing members you need
             an EMS account.  If you already have one, please
-            <a href="scout_auth_participant_list">login</a>.
+            <a href="{{ path('scout_auth_participant_list', {'eventId': event.getId}) }}">login</a>.
             Otherwise, create your group
             <a href="{{ path('scout_group_create') }}">here</a>.
         </p>
