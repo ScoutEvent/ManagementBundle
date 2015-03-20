@@ -42,7 +42,7 @@ class ParticipantController extends Controller
         return $this->render(
             'ScoutEventManagementBundle:Event:display.html.twig',
             array(
-                'event' => $em->getRepository('ScoutEventDataBundle:Event')->find($eventId);
+                'event' => $em->getRepository('ScoutEventDataBundle:Event')->find($eventId)
             )
         );
     }
