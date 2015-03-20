@@ -6,6 +6,6 @@ abstract class HealthFormAdditionalStepProvider
 {
 
     abstract public function getSteps();
-    abstract public function additionalProcess($form, $healthFormEntity);
+    abstract public function additionalProcess($flow, $form, $healthFormEntity);
 
 }
