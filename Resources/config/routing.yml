@@ -63,6 +63,11 @@ scout_participant_list:
     path:     /event/{eventId}/participants
     defaults:
         _controller: ScoutEventManagementBundle:Participant:list
+
+scout_auth_participant_list:
+    path:     /event/{eventId}/participants_
+    defaults:
+        _controller: ScoutEventManagementBundle:Participant:list
         roles: [ IS_AUTHENTICATED_FULLY ]
 
 scout_participant_create:

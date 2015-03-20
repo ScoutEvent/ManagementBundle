@@ -1,0 +1,30 @@
+{% extends 'ScoutEventBaseBundle:Default:base.html.twig' %}
+
+{% block body %}
+    <div class="col-sm-10 col-sm-offset-1 singlebody">
+        <h1 class="page-header">
+            {{ event.getName }}
+        </h1>
+        <p>{{ event.getSummary }}</p>
+        <p>
+            If you are a member who wishes to attend, please
+            ask your group leader and you should receive an 
+            email with details on how to proceed.
+        </p>
+        <p>
+            If you are a group leader and wish to register
+            members or manage your existing members you need
+            an EMS account.  If you already have one, please
+            <a href="scout_auth_participant_list">login</a>.
+            Otherwise, create your group
+            <a href="{{ path('scout_group_create') }}">here</a>.
+        </p>
+        <p>
+            If another leader has already added your group,
+            please ask them to add you as a leader for that
+            group.  Do not create another one.
+        </p>
+        <div class="clearfix"></div>
+        <div class="clearfix">&nbsp;</div>
+    </div>
+{% endblock %}

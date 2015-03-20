@@ -26,6 +26,29 @@ class ParticipantController extends Controller
 
     public function listAction($eventId)
     {
+        
+        if (true === $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY'))
+        {
+            return listParticipants($eventId);
+        }
+        else
+        {
+            return eventPage($eventId);
+        }
+    }
+    
+    private function eventPage($eventId)
+    {
+        return $this->render(
+            'ScoutEventManagementBundle:Event:display.html.twig',
+            array(
+                'event' => $em->getRepository('ScoutEventDataBundle:Event')->find($eventId);
+            )
+        );
+    }
+    
+    private function listParticipants($eventId)
+    {
         $em = $this->getDoctrine()->getManager();
         
         $event = $em->getRepository('ScoutEventDataBundle:Event')->find($eventId);
