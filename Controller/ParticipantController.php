@@ -29,11 +29,11 @@ class ParticipantController extends Controller
         
         if (true === $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY'))
         {
-            return listParticipants($eventId);
+            return $this->listParticipants($eventId);
         }
         else
         {
-            return eventPage($eventId);
+            return $this->eventPage($eventId);
         }
     }
     
