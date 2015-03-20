@@ -15,15 +15,36 @@
             If you are a group leader and wish to register
             members or manage your existing members you need
             an EMS account.  If you already have one, please
-            <a href="{{ path('scout_auth_participant_list', {'eventId': event.getId}) }}">login</a>.
-            Otherwise, create your group
-            <a href="{{ path('scout_group_create') }}">here</a>.
+            login.  Otherwise, create your group below.
         </p>
         <p>
             If another leader has already added your group,
             please ask them to add you as a leader for that
             group.  Do not create another one.
         </p>
+        <h1 class="page-header">
+            Login
+        </h1>
+        <form action="{{ path('scout_base_login_check') }}" method="post">
+            <p>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="_username" />
+            </p>
+            <p>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="_password" />
+            </p>
+            {% if pathExists('scout_password_send_reset') %}
+                <p><a href="{{ path('scout_password_send_reset') }}">Forgot password?</a></p>
+            {% endif %}
+            <p>
+                <input type="submit" name="login" />
+            </p>
+        </form>
+        <h1 class="page-header">
+            Create Group
+        </h1>
+        {{ form(form) }}
         <div class="clearfix"></div>
         <div class="clearfix">&nbsp;</div>
     </div>

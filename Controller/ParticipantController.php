@@ -12,8 +12,10 @@ use Symfony\Component\Translation\MessageSelector;
 use ScoutEvent\ManagementBundle\Form\Type\ParticipantType;
 use ScoutEvent\ManagementBundle\Form\Type\MultipleParticipantType;
 use ScoutEvent\ManagementBundle\Form\Type\HealthFormType;
+use ScoutEvent\ManagementBundle\Form\Type\UnauthenticatedGroupType;
 use ScoutEvent\DataBundle\Entity\Participant;
 use ScoutEvent\DataBundle\Entity\HealthForm;
+use ScoutEvent\DataBundle\Entity\GroupUnit;
 use ScoutEvent\PasswordResetBundle\Entity\PasswordReset;
 
 class ParticipantController extends Controller
@@ -40,11 +42,16 @@ class ParticipantController extends Controller
     private function eventPage($eventId)
     {
         $em = $this->getDoctrine()->getManager();
+        $form = $this->createForm(new UnauthenticatedGroupType(), new GroupUnit(), array(
+            'action' => $this->generateUrl('scout_group_create'),
+            'em' => $em
+        ));
         
         return $this->render(
             'ScoutEventManagementBundle:Event:display.html.twig',
             array(
-                'event' => $em->getRepository('ScoutEventDataBundle:Event')->find($eventId)
+                'event' => $em->getRepository('ScoutEventDataBundle:Event')->find($eventId),
+                'form' => $form->createView()
             )
         );
     }
