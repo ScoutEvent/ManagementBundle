@@ -38,7 +38,8 @@
                 <p><a href="{{ path('scout_password_send_reset') }}">Forgot password?</a></p>
             {% endif %}
             <p>
-                <input type="submit" name="login" />
+                <input type="hidden" name="_target_path" value="{{ path('scout_participant_list', {'eventId': event.getId}) }}" />
+                <input type="submit" value="login" />
             </p>
         </form>
         <h1 class="page-header">
