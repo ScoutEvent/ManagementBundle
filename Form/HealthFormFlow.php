@@ -5,6 +5,7 @@ namespace ScoutEvent\ManagementBundle\Form;
 use Craue\FormFlowBundle\Form\FormFlow;
 
 use ScoutEvent\ManagementBundle\Form\Type\HealthFormBasicType;
+use ScoutEvent\ManagementBundle\Form\Type\HealthFormPictureType;
 use ScoutEvent\ManagementBundle\Form\Type\HealthFormMedicalType;
 use ScoutEvent\ManagementBundle\Form\Type\HealthFormEmergencyType;
 use ScoutEvent\ManagementBundle\Form\Type\HealthFormSignatureType;

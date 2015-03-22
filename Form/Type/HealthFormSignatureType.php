@@ -9,6 +9,10 @@ class HealthFormSignatureType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder->add('picture', new StoredFileType(), array(
+            'required' => false
+        ));
+        
         $builder->add('signature', 'text');
     }
 
